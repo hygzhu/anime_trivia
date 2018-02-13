@@ -1,16 +1,9 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var App = require('./components/App');
-var ReactPlayer = require('react-player');
-
-const test = (
-    <div>
-        <App/>
-    </div>
-);
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/App';
 
 ReactDOM.render(
-    test,
+    <App/>,
     document.getElementById('app'),
 );
 
