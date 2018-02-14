@@ -1,6 +1,5 @@
 import React from 'react';
 import VideoPlayer from './video-player';
-import SubmitForm from './submit-form'
 
 class App extends React.Component {
 
@@ -11,7 +10,6 @@ class App extends React.Component {
     render() {
         return(
             <div>
-                <SubmitForm score={0} answer={"test"}/>
                 <VideoPlayer/>
             </div>
         );
