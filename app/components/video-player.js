@@ -1,7 +1,5 @@
 import React from 'react';
 import ReactPlayer from 'react-player';
-import AnimeList from '../../resources/animelist.json';
-import SubmitForm from './submit-form'
 
 export default class VideoPlayer extends React.Component{
     
@@ -9,27 +7,18 @@ export default class VideoPlayer extends React.Component{
         super(props);
 
         this.state = {
-            filename: "",
-            anime: null
+            filename: this.props.filename
         };
     }
 
-    getVideo(){
-        const animelist = AnimeList;
-        const total = animelist.length;
-        const randAnime = Math.floor((Math.random() * total) + 1);
-        //console.log(animelist[randAnime]);
-        this.state.filename = "http://openings.moe/video/" + animelist[randAnime]["file"];
-        this.state.anime = animelist[randAnime];
+    componentWillReceiveProps(nextProps){
+        this.setState({filename: nextProps.filename});
     }
-
     
     render(){
-        this.getVideo();
         console.log(this.state.filename);
         return(
             <div>
-                <SubmitForm score={0} anime={this.state.anime}/>
                 <ReactPlayer 
                 url={this.state.filename}
                 width='100%'
