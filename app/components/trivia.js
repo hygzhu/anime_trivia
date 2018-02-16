@@ -32,22 +32,36 @@ export default class SubmitForm extends React.Component{
             title: newAnime["title"],
             songName: newAnime["song"] ? newAnime["song"]["title"] : null,
             songArtist: newAnime["song"] ? newAnime["song"]["artist"] : null,
-            filename: "../../resources/Ending1-Konosuba.webm"
-            //this.state.filename: "http://openings.moe/video/" + animelist[randAnime]["file"]
+            filename: "http://openings.moe/video/" + animelist[randAnime]["file"]
         };
     }
 
     render(){
-        console.log(this.state.filename + "LOL");
+
+        const optionsCount = 4;
+        const totalAnime = 1404;
+
+        var randomOptions = [];
+        for (var i = 0; i < optionsCount; i++){
+            var index = Math.floor((Math.random() * totalAnime) + 1);
+            randomOptions.push(AnimeList[index]["source"]);
+        }
+
+        randomOptions[Math.floor((Math.random() * optionsCount))] = this.state.animeName;
+
+        var randomButtons = [];
+        for (var i =0; i<optionsCount; i++){
+            randomButtons.push(
+                <button key={i} onClick={this.submitAnswer.bind(this, randomOptions[i])}>{randomOptions[i]}</button>
+            );
+        }
+
+        console.log(randomOptions);
+
         return(
             <div>
                 <h1>{"Score: "  + this.state.score}</h1>
-                <div>
-                    <button onClick={this.submitAnswer.bind(this)}>Anime1</button>
-                    <button onClick={this.submitAnswer.bind(this)}>Anime2</button>
-                    <button onClick={this.submitAnswer.bind(this)}>Anime3</button>
-                    <button onClick={this.submitAnswer.bind(this)}>Anime4</button>
-                </div>
+                {randomButtons}
                 <VideoPlayer filename={this.state.filename} />
             </div>
         );
@@ -57,8 +71,31 @@ export default class SubmitForm extends React.Component{
         this.setState({ score: this.state.score +  1});
     }
 
-    submitAnswer(){
-        console.log("clicked");
-        this.setState({filename: "../../resources/Opening1-SteinsGate.webm"});
+    submitAnswer(answer){
+        const animelist = AnimeList;
+        const total = animelist.length;
+        const randAnime = Math.floor((Math.random() * total) + 1);
+        const newAnime = animelist[randAnime];
+        console.log(newAnime);
+
+        if(answer == this.state.animeName){
+            this.setState({
+                animeName: newAnime["source"],
+                title: newAnime["title"],
+                songName: newAnime["song"] ? newAnime["song"]["title"] : null,
+                songArtist: newAnime["song"] ? newAnime["song"]["artist"] : null,
+                filename: "http://openings.moe/video/" + animelist[randAnime]["file"],
+                score: this.state.score +  1
+            });
+        }else{
+            this.setState({
+                animeName: newAnime["source"],
+                title: newAnime["title"],
+                songName: newAnime["song"] ? newAnime["song"]["title"] : null,
+                songArtist: newAnime["song"] ? newAnime["song"]["artist"] : null,
+                filename: "http://openings.moe/video/" + animelist[randAnime]["file"]
+            });
+        }
+        
     }
 }
