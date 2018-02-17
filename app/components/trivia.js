@@ -1,6 +1,7 @@
 import React from 'react';
 import VideoPlayer from "./video-player"
 import AnimeList from '../../resources/animelist.json';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 class TextAnswer extends React.Component{
     render (){
@@ -36,6 +37,19 @@ export default class SubmitForm extends React.Component{
         };
     }
 
+    createNotification(type){
+        if(type == "success"){
+            return(
+                NotificationManager.success('Correct')
+            );
+        }else{
+            return(
+                NotificationManager.error('Wrong')
+            );
+        }
+        
+    }
+
     render(){
 
         const optionsCount = 4;
@@ -62,6 +76,7 @@ export default class SubmitForm extends React.Component{
             <div>
                 <h1>{"Score: "  + this.state.score}</h1>
                 {randomButtons}
+                <NotificationContainer/>
                 <VideoPlayer filename={this.state.filename} />
             </div>
         );
@@ -79,6 +94,9 @@ export default class SubmitForm extends React.Component{
         console.log(newAnime);
 
         if(answer == this.state.animeName){
+
+            this.createNotification("success");
+
             this.setState({
                 animeName: newAnime["source"],
                 title: newAnime["title"],
@@ -88,6 +106,9 @@ export default class SubmitForm extends React.Component{
                 score: this.state.score +  1
             });
         }else{
+
+            this.createNotification("fail");
+
             this.setState({
                 animeName: newAnime["source"],
                 title: newAnime["title"],
