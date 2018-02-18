@@ -27,6 +27,7 @@ export default class SubmitForm extends React.Component{
         console.log(newAnime);
 
         this.state = {
+            mode: this.props.mode,
             multipleChoice: true,
             score: 0,
             animeName: newAnime["source"],
@@ -61,6 +62,7 @@ export default class SubmitForm extends React.Component{
             randomOptions.push(AnimeList[index]["source"]);
         }
 
+
         randomOptions[Math.floor((Math.random() * optionsCount))] = this.state.animeName;
 
         var randomButtons = [];
@@ -74,6 +76,7 @@ export default class SubmitForm extends React.Component{
 
         return(
             <div>
+                <h3>Mode: {this.state.mode}</h3>
                 <h1>{"Score: "  + this.state.score}</h1>
                 {randomButtons}
                 <NotificationContainer/>

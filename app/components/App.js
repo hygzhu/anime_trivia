@@ -9,19 +9,34 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            screen: "landing"
+            screen: "landing",
+            mode: "anime"
         }
+    }
+
+    setMode(event){
+        this.setState({mode : event.target.value });
     }
 
     screen() {
         const screen = this.state.screen;
         if(screen == "trivia"){
-            return <Trivia />;
+            return <Trivia mode={this.state.mode}/>;
         }else if(screen == "landing"){
             return(
             <div>
                 <h1>Anime Song Trivia</h1>
                 <button onClick={this.play.bind(this)}>Play</button>
+                <br/>
+                <br/>
+                <div>
+                    <h3>Mode: {this.state.mode}</h3>
+                    <select onChange={this.setMode.bind(this)}>
+                        <option value="anime">anime</option>
+                        <option value="song">song</option>
+                        <option value="oped">op/ed</option>
+                    </select>
+                </div>
             </div>
             );
         }
