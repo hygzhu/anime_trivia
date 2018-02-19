@@ -10,7 +10,7 @@ class App extends React.Component {
 
         this.state = {
             screen: "landing",
-            mode: "anime"
+            mode: "visible"
         }
     }
 
@@ -32,9 +32,8 @@ class App extends React.Component {
                 <div>
                     <h3>Mode: {this.state.mode}</h3>
                     <select onChange={this.setMode.bind(this)}>
-                        <option value="anime">anime</option>
-                        <option value="song">song</option>
-                        <option value="oped">op/ed</option>
+                        <option value="visible">visible</option>
+                        <option value="hidden">hidden</option>
                     </select>
                 </div>
             </div>

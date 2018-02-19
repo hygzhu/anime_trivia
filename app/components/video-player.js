@@ -7,7 +7,8 @@ export default class VideoPlayer extends React.Component{
         super(props);
 
         this.state = {
-            filename: this.props.filename
+            filename: this.props.filename,
+            playerSize: this.props.mode == "visible" ? 100 : 0
         };
     }
 
@@ -21,8 +22,8 @@ export default class VideoPlayer extends React.Component{
             <div>
                 <ReactPlayer 
                 url={this.state.filename}
-                width='100%'
-                height='100vh'
+                width= {this.state.playerSize +'%'}
+                height= {this.state.playerSize + 'vh'}
                 playing
                 loop
                 />

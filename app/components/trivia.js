@@ -80,7 +80,7 @@ export default class SubmitForm extends React.Component{
                 <h1>{"Score: "  + this.state.score}</h1>
                 {randomButtons}
                 <NotificationContainer/>
-                <VideoPlayer filename={this.state.filename} />
+                <VideoPlayer filename={this.state.filename} mode={this.state.mode} />
             </div>
         );
     }
