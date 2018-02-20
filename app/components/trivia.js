@@ -28,6 +28,7 @@ export default class SubmitForm extends React.Component{
 
         this.state = {
             mode: this.props.mode,
+            choices: this.props.choices,
             multipleChoice: true,
             score: 0,
             animeName: newAnime["source"],
@@ -53,7 +54,7 @@ export default class SubmitForm extends React.Component{
 
     render(){
 
-        const optionsCount = 4;
+        const optionsCount = this.state.choices;
         const totalAnime = 1404;
 
         var randomOptions = [];

@@ -10,7 +10,8 @@ class App extends React.Component {
 
         this.state = {
             screen: "landing",
-            mode: "visible"
+            mode: "visible",
+            choices: 4
         }
     }
 
@@ -18,10 +19,14 @@ class App extends React.Component {
         this.setState({mode : event.target.value });
     }
 
+    setChoices(event){
+        this.setState({choices : event.target.value });
+    }
+
     screen() {
         const screen = this.state.screen;
         if(screen == "trivia"){
-            return <Trivia mode={this.state.mode}/>;
+            return <Trivia mode={this.state.mode} choices={this.state.choices}/>;
         }else if(screen == "landing"){
             return(
             <div>
@@ -34,6 +39,11 @@ class App extends React.Component {
                     <select onChange={this.setMode.bind(this)}>
                         <option value="visible">visible</option>
                         <option value="hidden">hidden</option>
+                    </select>
+                    <h3>Choices: {this.state.choices}</h3>
+                    <select onChange={this.setChoices.bind(this)}>
+                        <option value={4}>Few</option>
+                        <option value={8}>Many</option>
                     </select>
                 </div>
             </div>

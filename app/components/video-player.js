@@ -24,6 +24,7 @@ export default class VideoPlayer extends React.Component{
                 url={this.state.filename}
                 width= {this.state.playerSize +'%'}
                 height= {this.state.playerSize + 'vh'}
+                volume = {0.8}
                 playing
                 loop
                 />
