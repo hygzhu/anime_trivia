@@ -24,13 +24,16 @@ export default class SubmitForm extends React.Component{
         const total = animelist.length;
         const randAnime = Math.floor((Math.random() * total) + 1);
         const newAnime = animelist[randAnime];
-        console.log(newAnime);
+        //console.log(newAnime);
 
         this.state = {
             mode: this.props.mode,
             choices: this.props.choices,
+            multiplier: this.props.multiplier,
+            scoreCallback: this.props.scoreCallback,
             multipleChoice: true,
             score: 0,
+            lives: 3,
             animeName: newAnime["source"],
             title: newAnime["title"],
             songName: newAnime["song"] ? newAnime["song"]["title"] : null,
@@ -73,12 +76,12 @@ export default class SubmitForm extends React.Component{
             );
         }
 
-        console.log(randomOptions);
+        //console.log(randomOptions);
 
         return(
             <div>
-                <h3>Mode: {this.state.mode}</h3>
-                <h1>{"Score: "  + this.state.score}</h1>
+                <h3>Mode: {this.state.mode}, Multiplier: {this.state.multiplier}x</h3>
+                <h1>{"Score: "  + this.state.score}<br/>{"Lives: " + this.state.lives}</h1>
                 {randomButtons}
                 <NotificationContainer/>
                 <VideoPlayer filename={this.state.filename} mode={this.state.mode} />
@@ -95,7 +98,7 @@ export default class SubmitForm extends React.Component{
         const total = animelist.length;
         const randAnime = Math.floor((Math.random() * total) + 1);
         const newAnime = animelist[randAnime];
-        console.log(newAnime);
+        //console.log(newAnime);
 
         if(answer == this.state.animeName){
 
@@ -107,9 +110,9 @@ export default class SubmitForm extends React.Component{
                 songName: newAnime["song"] ? newAnime["song"]["title"] : null,
                 songArtist: newAnime["song"] ? newAnime["song"]["artist"] : null,
                 filename: "http://openings.moe/video/" + animelist[randAnime]["file"],
-                score: this.state.score +  1
+                score: this.state.score +  10 * this.state.multiplier
             });
-        }else{
+        }else if (answer != this.state.animeName && this.state.lives > 1){
 
             this.createNotification("fail");
 
@@ -118,8 +121,11 @@ export default class SubmitForm extends React.Component{
                 title: newAnime["title"],
                 songName: newAnime["song"] ? newAnime["song"]["title"] : null,
                 songArtist: newAnime["song"] ? newAnime["song"]["artist"] : null,
-                filename: "http://openings.moe/video/" + animelist[randAnime]["file"]
+                filename: "http://openings.moe/video/" + animelist[randAnime]["file"],
+                lives: this.state.lives - 1
             });
+        }else{
+            this.props.scoreCallback(this.state.score);
         }
         
     }
