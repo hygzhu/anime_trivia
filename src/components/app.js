@@ -31,9 +31,9 @@ class App extends React.Component {
             return (
                 <div>
                   <Menu 
-                    multiplier={this.state.multiplier}
-                    modeMultiplier={this.state.modeMultiplier}
-                    choicesMultiplier={this.state.choicesMultiplier}
+                    multiplier={multiplier}
+                    modeMultiplier={modeMultiplier}
+                    choicesMultiplier={choicesMultiplier}
                     choices={this.state.choices}
                     mode={this.state.mode}
                     changeState={this.changeState}
@@ -62,8 +62,8 @@ class App extends React.Component {
         this.setState({mode: newMode});
     }
 
-    setChoices = (event) => {
-        this.setState({choices: newMode});
+    setChoices = (newChoice) => {
+        this.setState({choices: newChoice});
     }
 
     scoreCallback = (data) => {
