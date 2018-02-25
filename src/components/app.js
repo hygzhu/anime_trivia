@@ -3,7 +3,7 @@ import Trivia from './trivia';
 import Menu from "./menu"
 import Score from "./score"
 
-class App extends React.Component {
+export default class App extends React.Component {
     constructor(props) {
         super(props);
 
@@ -44,12 +44,10 @@ class App extends React.Component {
             );
         } else if (screen == "score") {
             return (
-                <div>
-                    <h1>congratulations</h1>
-                    <h2>Your score was: {this.state.score}</h2>
-                    <button
-                        onClick={this.changeState.bind(this, "menu")}>Back to menu</button>
-                </div>
+                <Score 
+                    changeState={this.changeState}
+                    score={this.state.score}
+                />
             );
         }
     }
@@ -79,4 +77,3 @@ class App extends React.Component {
     }
 }
 
-export default App;
