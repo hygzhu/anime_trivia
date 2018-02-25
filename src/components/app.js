@@ -3,7 +3,7 @@ import Trivia from './trivia';
 import Menu from "./menu"
 import Score from "./score"
 
-class App extends React.Component {
+export default class App extends React.Component {
     constructor(props) {
         super(props);
 
@@ -77,4 +77,3 @@ class App extends React.Component {
     }
 }
 
-export default App;

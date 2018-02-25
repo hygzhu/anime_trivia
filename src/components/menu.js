@@ -3,9 +3,7 @@ import React from 'react';
 export default class Menu extends React.Component {
 
     render() {
-
         return (
-
             <div>
                 <div>
                     <h1>Anime Song Trivia</h1>
@@ -19,7 +17,7 @@ export default class Menu extends React.Component {
                             <option value="visible">visible</option>
                             <option value="hidden">hidden</option>
                         </select>
-                        <h3>Choices: {this.props.choices}({this.props.choicesMultiplier / 4}x)</h3>
+                        <h3>Choices: {this.props.choices}({this.props.choicesMultiplier/ 4}x)</h3>
                         <select onChange={this.setChoices.bind(this)}>
                             <option value={4}>Few</option>
                             <option value={8}>Many</option>
