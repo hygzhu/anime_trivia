@@ -2,12 +2,13 @@ import React from 'react';
 import VideoPlayer from "./video-player"
 import AnimeList from '../../resources/animelist.json';
 import MultipleChoice from "./multiplechoice"
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { Grid, Row, Col } from "react-bootstrap"
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 
-export default class SubmitForm extends React.Component{
+export default class SubmitForm extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         const animelist = AnimeList;
@@ -27,40 +28,26 @@ export default class SubmitForm extends React.Component{
         };
     }
 
-    createNotification(type){
-        if(type == "success"){
-            return(
+    createNotification(type) {
+        if (type == "success") {
+            return (
                 NotificationManager.success('Correct')
             );
-        }else{
-            return(
+        } else {
+            return (
                 NotificationManager.error('Wrong')
             );
         }
-        
+
     }
 
-    render(){
-        //console.log(randomOptions);
-
-        return(
-            <div>
-                <h3>Mode: {this.props.mode}, Multiplier: {this.props.multiplier}x</h3>
-                <h1>{"Score: "  + this.state.score}<br/>{"Lives: " + this.state.lives}</h1>
-                <MultipleChoice choices={this.props.choices} animeName={this.state.animeName} submitAnswer={this.submitAnswer.bind(this)}/>
-                <NotificationContainer/>
-                <VideoPlayer filename={this.state.filename} mode={this.props.mode} />
-            </div>
-        );
-    }
-
-    submitAnswer(answer){
+    submitAnswer(answer) {
         const animelist = AnimeList;
         const total = animelist.length;
         const randAnime = Math.floor((Math.random() * total) + 1);
         const newAnime = animelist[randAnime];
         //console.log(newAnime);
-        if(answer == this.state.animeName){
+        if (answer == this.state.animeName) {
 
             this.createNotification("success");
             this.setState({
@@ -69,9 +56,9 @@ export default class SubmitForm extends React.Component{
                 songName: newAnime["song"] ? newAnime["song"]["title"] : null,
                 songArtist: newAnime["song"] ? newAnime["song"]["artist"] : null,
                 filename: "http://openings.moe/video/" + animelist[randAnime]["file"],
-                score: this.state.score +  10 * this.props.multiplier
+                score: this.state.score + 10 * this.props.multiplier
             });
-        }else if (answer != this.state.animeName && this.state.lives > 1){
+        } else if (answer != this.state.animeName && this.state.lives > 1) {
 
             this.createNotification("fail");
             this.setState({
@@ -82,9 +69,40 @@ export default class SubmitForm extends React.Component{
                 filename: "http://openings.moe/video/" + animelist[randAnime]["file"],
                 lives: this.state.lives - 1
             });
-        }else{
+        } else {
             this.props.scoreCallback(this.state.score);
         }
-        
+
+    }
+
+    render() {
+        //console.log(randomOptions);
+
+        return (
+            <div>
+                <Grid>
+                    <Row>
+                        <h1>Anime Trivia</h1>
+                    </Row>
+                    <Row>
+                        <Col xs={6} md={4}>
+                            <h3>Mode: {this.props.mode}<br/>Multiplier: {this.props.multiplier}x</h3>
+                        </Col>
+                        <Col xs={6} md={4}>
+                        </Col>
+                        <Col xsHidden md={4}>
+                        <h3>{"Score: " + this.state.score}<br />{"Lives: " + this.state.lives}</h3>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <MultipleChoice choices={this.props.choices} animeName={this.state.animeName} submitAnswer={this.submitAnswer.bind(this)} />
+                    </Row>
+                    <Row>
+                        <VideoPlayer filename={this.state.filename} mode={this.props.mode} />
+                    </Row>
+                </Grid>
+                <NotificationContainer />
+            </div>
+        );
     }
 }

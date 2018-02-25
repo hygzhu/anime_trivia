@@ -1,7 +1,23 @@
 import React from 'react';
 import AnimeList from '../../resources/animelist.json';
 
+const buttonStyle = {
+    backgroundColor: "rgb(23, 171, 190)",
+    color: "#ffffff",
+    padding: "15px 32px",
+    textAlign: "center",
+    textDecoration : "none",
+    display: "inline-block",
+    fontSize: "16px",
+    border: "1px solid white"
+};
+
 export default class MultipleChoice extends React.Component{
+
+    submitAnswer(answer){
+        this.props.submitAnswer(answer);
+    }
+
     render (){
         const optionsCount = this.props.choices;
         const totalAnime = 1404;
@@ -18,7 +34,7 @@ export default class MultipleChoice extends React.Component{
         var randomButtons = [];
         for (var i =0; i<optionsCount; i++){
             randomButtons.push(
-                <button key={i} onClick={this.submitAnswer.bind(this, randomOptions[i])}>{randomOptions[i]}</button>
+                <button style={buttonStyle} key={i} onClick={this.submitAnswer.bind(this, randomOptions[i])}>{randomOptions[i]}</button>
             );
         }
 
@@ -27,9 +43,5 @@ export default class MultipleChoice extends React.Component{
                 {randomButtons}
             </div>
         );
-    }
-
-    submitAnswer(answer){
-        this.props.submitAnswer(answer);
     }
 }

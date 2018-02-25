@@ -1,6 +1,11 @@
 import React from 'react';
 
 export default class Score extends React.Component {
+
+    changeState(newState) {
+        this.props.changeState(newState);
+    }
+
     render() {
         return (
             <div>
@@ -10,9 +15,5 @@ export default class Score extends React.Component {
                         onClick={this.changeState.bind(this, "menu")}>Back to menu</button>
             </div>
         );
-    }
-
-    changeState(newState) {
-        this.props.changeState(newState);
     }
 }
