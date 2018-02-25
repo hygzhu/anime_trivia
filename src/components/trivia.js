@@ -40,20 +40,6 @@ export default class SubmitForm extends React.Component{
         
     }
 
-    render(){
-        //console.log(randomOptions);
-
-        return(
-            <div>
-                <h3>Mode: {this.props.mode}, Multiplier: {this.props.multiplier}x</h3>
-                <h1>{"Score: "  + this.state.score}<br/>{"Lives: " + this.state.lives}</h1>
-                <MultipleChoice choices={this.props.choices} animeName={this.state.animeName} submitAnswer={this.submitAnswer.bind(this)}/>
-                <NotificationContainer/>
-                <VideoPlayer filename={this.state.filename} mode={this.props.mode} />
-            </div>
-        );
-    }
-
     submitAnswer(answer){
         const animelist = AnimeList;
         const total = animelist.length;
@@ -86,5 +72,19 @@ export default class SubmitForm extends React.Component{
             this.props.scoreCallback(this.state.score);
         }
         
+    }
+
+    render(){
+        //console.log(randomOptions);
+
+        return(
+            <div>
+                <h3>Mode: {this.props.mode}, Multiplier: {this.props.multiplier}x</h3>
+                <h1>{"Score: "  + this.state.score}<br/>{"Lives: " + this.state.lives}</h1>
+                <MultipleChoice choices={this.props.choices} animeName={this.state.animeName} submitAnswer={this.submitAnswer.bind(this)}/>
+                <NotificationContainer/>
+                <VideoPlayer filename={this.state.filename} mode={this.props.mode} />
+            </div>
+        );
     }
 }
