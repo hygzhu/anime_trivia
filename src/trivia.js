@@ -1,6 +1,6 @@
 import React from 'react';
 import VideoPlayer from "./video-player"
-import AnimeList from '../../resources/animelist.json';
+import AnimeList from './animelist.json';
 import MultipleChoice from "./multiplechoice"
 import { Grid, Row, Col } from "react-bootstrap"
 import { NotificationContainer, NotificationManager } from 'react-notifications';

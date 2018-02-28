@@ -1,5 +1,5 @@
 import React from 'react';
-import AnimeList from '../../resources/animelist.json';
+import AnimeList from './animelist.json';
 
 const buttonStyle = {
     backgroundColor: "rgb(23, 171, 190)",
