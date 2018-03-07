@@ -29,7 +29,7 @@ export default class SubmitForm extends React.Component {
     }
 
     createNotification(type) {
-        if (type == "success") {
+        if (type === "success") {
             return (
                 NotificationManager.success('Correct')
             );
@@ -47,7 +47,7 @@ export default class SubmitForm extends React.Component {
         const randAnime = Math.floor((Math.random() * total) + 1);
         const newAnime = animelist[randAnime];
         //console.log(newAnime);
-        if (answer == this.state.animeName) {
+        if (answer === this.state.animeName) {
 
             this.createNotification("success");
             this.setState({
@@ -58,7 +58,7 @@ export default class SubmitForm extends React.Component {
                 filename: "http://openings.moe/video/" + animelist[randAnime]["file"],
                 score: this.state.score + 10 * this.props.multiplier
             });
-        } else if (answer != this.state.animeName && this.state.lives > 1) {
+        } else if (answer !== this.state.animeName && this.state.lives > 1) {
 
             this.createNotification("fail");
             this.setState({

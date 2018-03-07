@@ -32,9 +32,9 @@ export default class MultipleChoice extends React.Component{
         randomOptions[Math.floor((Math.random() * optionsCount))] = this.props.animeName;
 
         var randomButtons = [];
-        for (var i =0; i<optionsCount; i++){
+        for (var j =0; j<optionsCount; j++){
             randomButtons.push(
-                <button style={buttonStyle} key={i} onClick={this.submitAnswer.bind(this, randomOptions[i])}>{randomOptions[i]}</button>
+                <button style={buttonStyle} key={j} onClick={this.submitAnswer.bind(this, randomOptions[j])}>{randomOptions[j]}</button>
             );
         }
 
