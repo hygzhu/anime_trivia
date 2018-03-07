@@ -5,7 +5,7 @@ export default class VideoPlayer extends React.Component{
 
     render(){
         //console.log(this.state.filename);
-        const playerSize = this.props.mode == "visible" ? 100 : 0;
+        const playerSize = this.props.mode === "visible" ? 100 : 0;
 
         return(
             <div>

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Trivia from './trivia';
 import Menu from "./menu"
@@ -20,17 +19,17 @@ class App extends Component {
 
   screen() {
     const screen = this.state.screen;
-    const modeMultiplier = this.state.mode == "visible" ? 0.1 : 1;
+    const modeMultiplier = this.state.mode === "visible" ? 0.1 : 1;
     const choicesMultiplier = this.state.choices / 4;
     const multiplier = 1 * modeMultiplier * choicesMultiplier;
 
-    if (screen == "trivia") {
+    if (screen === "trivia") {
       return <Trivia
         mode={this.state.mode}
         choices={this.state.choices}
         multiplier={multiplier}
         scoreCallback={this.scoreCallback} />
-    } else if (screen == "menu") {
+    } else if (screen === "menu") {
       return (
         <div>
           <Menu
@@ -45,7 +44,7 @@ class App extends Component {
           />
         </div>
       );
-    } else if (screen == "score") {
+    } else if (screen === "score") {
       return (
         <Score
           changeState={this.changeState}
