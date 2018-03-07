@@ -10,7 +10,7 @@ Clone and do
 yarn start
 ```
 
-Try it here: http://159.89.116.149/ 
+Try it here: https://animequiz-2031b.firebaseapp.com/
 (May not be the latest version)
 
 
