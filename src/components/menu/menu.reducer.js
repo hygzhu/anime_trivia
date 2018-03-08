@@ -5,7 +5,9 @@ const menu = function(previousState = {}, action) {
                 mode: action.mode,
             };
       case "CHANGECHOICES":
-        return previousState;
+      return { ...previousState,
+        choices: action.choices,
+            };
       case "PLAY":
         return previousState;
       default:

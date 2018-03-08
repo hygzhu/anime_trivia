@@ -1,1 +1,24 @@
-
+body, html {
+    height: 100%;
+    margin: 0;
+    background-color: black;
+  }
+  h1,h2,h3,h4,h5 {
+    color: white;
+  }
+  div {
+    text-align: center;
+  }
+  
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    background:grey;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }

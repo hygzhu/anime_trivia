@@ -12,8 +12,8 @@ const mapStateToProps = (state) => {
   const mapDispatchToProps = (dispatch) => {
     return {
         play: () => dispatch(play()),
-        changeMode: () => dispatch(changeMode()),
-        changeChoices: () => dispatch(changeChoices()),
+        changeMode: (mode) => dispatch(changeMode(mode)),
+        changeChoices: (choices) => dispatch(changeChoices(choices)),
     }
   }
   
@@ -31,11 +31,11 @@ class Menu extends Component  {
                     <br />
                     <div>
                         <h3>Mode: {this.props.menu.mode} ({this.props.menu.modeMultiplier}x)</h3>
-                        <button onClick={() => changeMode("test")}>Visible</button>
-                        <button onClick={changeMode}>Hidden</button>
+                        <button onClick={() => changeMode("visible")}>Visible</button>
+                        <button onClick={() => changeMode("hidden")}>Hidden</button>
                         <h3>Choices: {this.props.menu.choices} ({this.props.menu.choicesMultiplier/ 4}x)</h3>
-                        <button onClick={changeChoices}>Few</button>
-                        <button onClick={changeChoices}>Many</button>
+                        <button onClick={() => changeChoices(4)}>Few</button>
+                        <button onClick={() => changeChoices(8)}>Many</button>
                     </div>
                 </div>
         );
