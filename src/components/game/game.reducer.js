@@ -1,4 +1,4 @@
-const menu = function(previousState = {}, action) {
+const game = function(previousState = {}, action) {
     switch (action.type) {
       case "CHANGEMODE":
         return { ...previousState,
@@ -19,4 +19,4 @@ const menu = function(previousState = {}, action) {
     }
   }
   
-  export default menu;
+  export default game;

@@ -33,7 +33,7 @@ class Menu extends Component  {
                         <h3>Mode: {this.props.menu.mode} ({this.props.menu.modeMultiplier}x)</h3>
                         <button onClick={() => changeMode("visible")}>Visible</button>
                         <button onClick={() => changeMode("hidden")}>Hidden</button>
-                        <h3>Choices: {this.props.menu.choices} ({this.props.menu.choicesMultiplier/ 4}x)</h3>
+                        <h3>Choices: {this.props.menu.choices} ({this.props.menu.choicesMultiplier}x)</h3>
                         <button onClick={() => changeChoices(4)}>Few</button>
                         <button onClick={() => changeChoices(8)}>Many</button>
                     </div>

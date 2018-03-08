@@ -8,11 +8,12 @@ import thunkMiddleware from 'redux-thunk';
 import rootReducer from "./reducers/index";
 
 const initialState = {
+      game: {
+        score: 0
+      },
       menu: {
-        screen: "menu",
         mode: "visible",
         choices: 4,
-        score: 0,
         pointsMultiplier: 1,
         modeMultiplier: 1,
         choicesMultiplier:1
