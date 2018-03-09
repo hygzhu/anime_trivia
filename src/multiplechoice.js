@@ -25,7 +25,13 @@ export default class MultipleChoice extends React.Component{
         var randomOptions = [];
         for (var i = 0; i < optionsCount; i++){
             var index = Math.floor((Math.random() * totalAnime) + 1);
-            randomOptions.push(AnimeList[index]["source"]);
+            var newAnime = AnimeList[index]["source"];
+            //prevents duplicates
+            while(newAnime == this.props.animeName || randomOptions.includes(newAnime)){
+                index = Math.floor((Math.random() * totalAnime) + 1);
+                newAnime = AnimeList[index]["source"];
+            }
+            randomOptions.push(newAnime);
         }
 
 
