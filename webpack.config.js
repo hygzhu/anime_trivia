@@ -47,7 +47,10 @@ module.exports = function( env = {} ){
         template: './index.html'
       }),
       new Dotenv()
-    ]
+    ],
+    node:{
+      fs: 'empty'
+    }
   }
 
   // Different Configurations for Development Build VS Production Build

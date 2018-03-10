@@ -26,6 +26,9 @@ const initialState = {
         songName: "",
         songArtist: "",
         filename: ""
+      },
+      score:{
+        scoreSubmitted: false,
       }
 };
 
