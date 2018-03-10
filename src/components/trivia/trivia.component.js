@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import "./trivia.component.css"; // Styles
-import { changeSong } from "./trivia.action"; 
+import { changeSong, submitAnswer } from "./trivia.action"; 
+import { scoreScreen } from "../game/game.action"; 
 
 import VideoPlayer from "./video-player"
 import AnimeList from './animelist.json';
@@ -20,11 +21,29 @@ const mapStateToProps = (state) => {
   const mapDispatchToProps = (dispatch) => {
     return {
       changeSong: (animeName, title, songName, songArtist, filename) => dispatch(changeSong(animeName, title, songName, songArtist, filename)),
+      submitAnswer: (answer, score, lifeChange) => dispatch(submitAnswer(answer, score, lifeChange)),
+      scoreScreen: () => dispatch(scoreScreen()),
     }
   }
 
 
 class Trivia extends Component  {
+
+  checkAnswer(answer){
+    const { submitAnswer, scoreScreen} = this.props
+    let score = 0;
+    let lifeChange = 0;
+    if(answer === this.props.trivia.animeName){
+        score = 10 * this.props.menu.pointsMultiplier;
+    }else if(this.props.game.lives > 1){
+        lifeChange = -1;
+    }else{
+        scoreScreen();
+        return;
+    }
+    submitAnswer(answer, score, lifeChange);
+    this.newSong();
+  }
 
     newSong(){
       const total = AnimeList.length;
@@ -59,7 +78,11 @@ class Trivia extends Component  {
                 </Col>
             </Row>
             <Row>
-              <MultipleChoice/>
+              <MultipleChoice 
+              choices={this.props.menu.choices} 
+              animeName={this.props.trivia.animeName}
+              checkAnswer={(answer)=>this.checkAnswer(answer)}
+              />
             </Row>
             <Row>
               <VideoPlayer/>

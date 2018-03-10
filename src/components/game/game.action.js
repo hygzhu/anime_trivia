@@ -3,4 +3,16 @@ export const play = () => {
       type: "PLAY",
     }
   }
-  
+
+export const scoreScreen = () => {
+  return {
+    type: "SCORE",
+  }
+}
+
+
+export const menuScreen = () => {
+  return {
+    type: "MENU",
+  }
+}

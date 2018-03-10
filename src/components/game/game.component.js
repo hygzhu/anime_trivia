@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import "./game.component.css"; // Styles
 import Menu from "../menu/menu.component.js"
 import Trivia from "../trivia/trivia.component.js"
+import Score from "../score/score.component.js"
 
 const mapStateToProps = (state) => {
     return {
@@ -18,6 +19,8 @@ class Game extends Component  {
               return (<Menu />);
             case "trivia":
               return (<Trivia/>);
+            case "score":
+              return (<Score />);
             default:
               return (<Menu />);
           }

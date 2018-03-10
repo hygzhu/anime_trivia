@@ -1,49 +1,21 @@
 import React from 'react';
-import { connect } from "react-redux";
 import AnimeList from './animelist.json';
-import { submitScore, submitAnswer } from "./trivia.action"; 
 
-const mapStateToProps = (state) => {
-    return {
-      menu: state.menu,
-      trivia: state.trivia
-    }
-  }
-
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        submitScore: (score) => dispatch(submitScore(score)),
-        submitAnswer: (answer) => dispatch(submitAnswer(answer)),
-    }
-}
-  
 
 class MultipleChoice extends React.Component{
 
-    checkAnswer(answer){
-        console.log(answer + " "+ this.props.trivia.animeName);
-        const { submitAnswer, submitScore} = this.props
-        if(answer === this.props.trivia.animeName){
-            console.log("submit Score");
-            var score = 10 * this.props.menu.pointsMultiplier;
-            submitAnswer(answer);
-            submitScore(score);
-        }
-    }
-
     render (){
-        const { menu, trivia} = this.props
+        const { choices, animeName, checkAnswer } = this.props
 
-        const optionsCount = menu.choices;
+        const optionsCount = choices;
         const totalAnime = AnimeList.length;
 
-        var randomOptions = [];
-        for (var i = 0; i < optionsCount; i++){
-            var index = Math.floor((Math.random() * totalAnime) + 1);
-            var newAnime = AnimeList[index]["source"];
+        let randomOptions = [];
+        for (let i = 0; i < optionsCount; i++){
+            let index = Math.floor((Math.random() * totalAnime) + 1);
+            let newAnime = AnimeList[index]["source"];
             //prevents duplicates
-            while(newAnime == trivia.animeName || randomOptions.includes(newAnime)){
+            while(newAnime == animeName || randomOptions.includes(newAnime)){
                 index = Math.floor((Math.random() * totalAnime) + 1);
                 newAnime = AnimeList[index]["source"];
             }
@@ -51,13 +23,13 @@ class MultipleChoice extends React.Component{
         }
 
 
-        randomOptions[Math.floor((Math.random() * optionsCount))] = trivia.animeName;
+        randomOptions[Math.floor((Math.random() * optionsCount))] = animeName;
 
-        var randomButtons = [];
-        for (var j =0; j<optionsCount; j++){
-            var answer = randomOptions[j]; //This needs to initialized or submitAnswer sends undefined
+        let randomButtons = [];
+        for (let j =0; j<optionsCount; j++){
+            let answer = randomOptions[j]; //This needs to initialized or submitAnswer sends undefined
             randomButtons.push(
-                <button key={j} onClick={() => this.checkAnswer(answer)}>{randomOptions[j]}</button>
+                <button key={j} onClick={() => checkAnswer(answer)}>{randomOptions[j]}</button>
             );
         }
 
@@ -69,4 +41,4 @@ class MultipleChoice extends React.Component{
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MultipleChoice);
+export default MultipleChoice;

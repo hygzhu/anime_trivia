@@ -10,7 +10,7 @@ const trivia = function(previousState = {}, action) {
       };
       case "SUBMITANSWER":
         return { ...previousState,
-          answer: action.answer,
+          answer: action.answer
       };
       default:
         return previousState;

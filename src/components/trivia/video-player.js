@@ -22,7 +22,7 @@ class VideoPlayer extends React.Component{
                 url={this.props.trivia.filename}
                 width= {playerSize +'%'}
                 height= {playerSize + 'vh'}
-                volume = {0.2}
+                volume = {0.5}
                 playing
                 loop
                 />

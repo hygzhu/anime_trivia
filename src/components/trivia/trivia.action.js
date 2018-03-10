@@ -9,16 +9,11 @@ export const changeSong = (animeName, title, songName, songArtist, filename) => 
   }
 }
 
-export const submitScore = (points) => {
-  return {
-    type: "SUBMITSCORE",
-    points: points
-  }
-}
-
-export const submitAnswer  = (answer) => {
+export const submitAnswer  = (answer, score, lifeChange) => {
   return {
     type: "SUBMITANSWER",
-    answer: answer
+    answer: answer,
+    score: score,
+    lifeChange: lifeChange
   }
 }
