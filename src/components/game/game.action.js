@@ -1,7 +1,6 @@
-export const changeMode = (mode) => {
+export const play = () => {
     return {
-      type: "CHANGEMODE",
-      mode: mode
+      type: "PLAY",
     }
   }
   

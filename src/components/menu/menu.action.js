@@ -12,9 +12,3 @@ export const changeMode = (mode) => {
     }
   }
   
-  export const play = () => {
-    return {
-      type: "PLAY",
-    }
-  }
-  

@@ -3,6 +3,7 @@ body, html {
     margin: 0;
     background-color: black;
   }
+  
   h1,h2,h3,h4,h5 {
     color: white;
   }
@@ -24,12 +25,11 @@ body, html {
   }
 
   button{
-    background-color: "rgb(23, 171, 190)";
-    color: "#ffffff";
-    padding: "15px 32px";
-    text-Align: "center";
-    text-Decoration : "none";
-    display: "inline-block";
-    font-size: "16px";
-    border: "1px solid white";
-};
+    background-color: teal;
+    color: white;
+    padding: 15px 32px;
+    text-Align: center;
+    display: inline-block;
+    font-size: 16px;
+    border: 1px solid white;
+}

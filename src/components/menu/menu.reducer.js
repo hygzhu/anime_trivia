@@ -12,8 +12,6 @@ const menu = function(previousState = {}, action) {
                 pointsMultiplier: previousState.modeMultiplier  * (action.choices === 4 ? 1 : 2),
                 choicesMultiplier: (action.choices === 4 ? 1 : 2)
             };
-      case "PLAY":
-        return previousState;
       default:
         return previousState;
     }

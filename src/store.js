@@ -9,7 +9,9 @@ import rootReducer from "./reducers/index";
 
 const initialState = {
       game: {
-        score: 0
+        score: 0,
+        lives: 3,
+        screen: "menu"
       },
       menu: {
         mode: "visible",
@@ -17,6 +19,13 @@ const initialState = {
         pointsMultiplier: 1,
         modeMultiplier: 1,
         choicesMultiplier:1
+      },
+      trivia: {
+        animeName: "",
+        title: "",
+        songName: "",
+        songArtist: "",
+        filename: ""
       }
 };
 

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import "./menu.component.css"; // Styles
-import { changeMode, changeChoices, play } from "./menu.action"; // Actions
+import { changeMode, changeChoices} from "./menu.action"; 
+import { play } from "../game/game.action"; 
 
 const mapStateToProps = (state) => {
     return {
@@ -26,14 +27,14 @@ class Menu extends Component  {
                 <div>
                     <h1>Anime Song Trivia</h1>
                     <button onClick={play}>Play</button>
-                    <h2>Points Multiplier: {this.props.menu.pointsMultiplier}x</h2>
+                    <h2>Points Multiplier: {menu.pointsMultiplier}x</h2>
                     <br />
                     <br />
                     <div>
-                        <h3>Mode: {this.props.menu.mode} ({this.props.menu.modeMultiplier}x)</h3>
+                        <h3>Mode: {menu.mode} ({menu.modeMultiplier}x)</h3>
                         <button onClick={() => changeMode("visible")}>Visible</button>
                         <button onClick={() => changeMode("hidden")}>Hidden</button>
-                        <h3>Choices: {this.props.menu.choices} ({this.props.menu.choicesMultiplier}x)</h3>
+                        <h3>Choices: {menu.choices} ({menu.choicesMultiplier}x)</h3>
                         <button onClick={() => changeChoices(4)}>Few</button>
                         <button onClick={() => changeChoices(8)}>Many</button>
                     </div>
