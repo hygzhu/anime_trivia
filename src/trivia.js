@@ -90,7 +90,7 @@ export default class SubmitForm extends React.Component {
                         </Col>
                         <Col xs={6} md={4}>
                         </Col>
-                        <Col xsHidden md={4}>
+                        <Col xs={6} md={4}>
                         <h3>{"Score: " + this.state.score}<br />{"Lives: " + this.state.lives}</h3>
                         </Col>
                     </Row>
