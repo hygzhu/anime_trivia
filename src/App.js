@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import './app.css';
+import './App.css';
 
-import Game from './components/Game/Game.component';
+import Game from './components/game/game.component';
 
 
 

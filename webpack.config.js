@@ -24,7 +24,7 @@ module.exports = function( env = {} ){
     context: resolve(__dirname, 'src'),
     entry: entryFile,
     output: {
-      path: resolve(__dirname, 'dist'),
+      path: resolve(__dirname, 'build'),
       filename: '[name].[hash].js'
     },
     devtool: 'inline-source-map',
