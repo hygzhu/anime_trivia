@@ -1,7 +1,7 @@
 import firebase from 'firebase'
 require('dotenv').config()
 
-var config = {
+let config = {
     apiKey: process.env.apiKey,
     authDomain: process.env.authDomain,
     databaseURL: process.env.databaseURL,
@@ -9,5 +9,5 @@ var config = {
     storageBucket: process.env.storageBucket,
     messagingSenderId: process.env.messagingSenderId
 };
-var fire = firebase.initializeApp(config);
+let fire = firebase.initializeApp(config);
 export default fire;
