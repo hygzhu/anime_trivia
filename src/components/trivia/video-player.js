@@ -17,16 +17,14 @@ class VideoPlayer extends React.Component{
         const playerSize = this.props.menu.mode === "visible" ? 100 : 0;
 
         return(
-            <div>
                 <ReactPlayer 
                 url={this.props.trivia.filename}
-                width= {playerSize +'%'}
+                width= {playerSize +'vw'}
                 height= {playerSize + 'vh'}
                 volume = {0.5}
                 playing
                 loop
                 />
-            </div>
         );
     }
 }

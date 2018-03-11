@@ -39,6 +39,18 @@ module.exports = function( env = {} ){
           ],
           exclude: ['./styles.css']
         },
+        {
+          test: /\.(png|jpg|gif|ico)$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                context: 'src/assets',
+                name: 'root[path][name].[ext]'
+              } 
+            }
+          ]
+        },
       ]
     },
     plugins: [

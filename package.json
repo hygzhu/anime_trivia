@@ -12,6 +12,7 @@
   "dependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "dotenv-webpack": "^1.4.3",
+    "file-loader": "^1.1.11",
     "firebase": "^4.11.0",
     "path": "^0.12.7",
     "react": "^15.4.2",

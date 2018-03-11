@@ -77,31 +77,30 @@ class Trivia extends Component {
   render() {
     return (
       <div>
-        <Grid>
-          <Row>
-            <h1>Anime Trivia</h1>
-          </Row>
+        <VideoPlayer style={{position:"relative", display: "flex", width: "100vw", height: "100vh", "zIndex": -1}}/>
+        <div style={{ display: "flex", top:"0%", left:"50%", transform: "translate(-50%, 0%)",  position:"fixed","zIndex": 100}}>
+        <Grid >
           <Row>
             <Col xs={6} md={4}>
               <h3>Mode: {this.props.menu.mode}<br />Multiplier: {this.props.menu.pointsMultiplier}x</h3>
             </Col>
             <Col xs={6} md={4}>
+            <h1>Anime Trivia</h1>
             </Col>
+            
             <Col xs={6} md={4}>
               <h3>{"Score: " + this.props.game.score}<br />{"Lives: " + this.props.game.lives}</h3>
             </Col>
           </Row>
-          <Row>
-            <MultipleChoice
-              choices={this.props.menu.choices}
-              animeName={this.props.trivia.animeName}
-              checkAnswer={(answer) => this.checkAnswer(answer)}
-            />
-          </Row>
-          <Row>
-            <VideoPlayer />
-          </Row>
         </Grid>
+        </div>
+        <div style={{ display: "flex", width: "100%", bottom:"0%", alignItems:"center", justifyContent:"center", position:"fixed","zIndex": 100}}>
+          <MultipleChoice
+                choices={this.props.menu.choices}
+                animeName={this.props.trivia.animeName}
+                checkAnswer={(answer) => this.checkAnswer(answer)}
+              />
+        </div>
         <NotificationContainer />
       </div>
     );
