@@ -1,16 +1,25 @@
 const express = require('express')
 const http = require('http')
+var cors = require('cors')
 const socketIO = require('socket.io')
 
 // our localhost port
 const port = 4001
 
 const app = express()
+//enables all cors requests
+app.use(cors())
+app.get('/products/:id', function (req, res, next) {
+  res.json({msg: 'This is CORS-enabled for all origins!'})
+})
+
 const server = http.createServer(app)
 const io = socketIO(server)
 
 var sessions = []
 var rooms = []
+
+
 
 io.on('connection', socket => {
 
@@ -95,6 +104,22 @@ socket.on('join-lobby', (data) => {
   printRooms();
 });
 
+//User sends a message to game lobby
+socket.on('send-message', (data) => {
+  //data has schema
+  /**
+   * type, message, meta
+   */
+  const lobbyName= socketByID(socket.id)["lobby"]; 
+
+  //sends message to everyone else in the room
+  io.sockets.in(lobbyName).emit('MESSAGERECEIVED', {
+    "message": data["message"],
+  });
+
+  console.log("SEND MESSAGE: ("+ socket.id +') Sent message to '+ lobbyName);
+});
+
 })
 
 server.listen(port, () => console.log(`Listening on port ${port}`))
@@ -107,7 +132,11 @@ function sessionConnectedDisconnected(socketID, connect){
   }else{
     const room = socketByID(socketID)["lobby"];
     sessions = sessions.filter(x => x.id !== socketID);
-    rooms = rooms.filter(x => x !== room)
+
+    //delete the room if there is nobody in it
+    if(roomSession(room).length == 0){
+      rooms = rooms.filter(x => x !== room)
+    }
     console.log('DISCONNECT: Session '+  socketID +' Disconnected');
   }
   printSessions();

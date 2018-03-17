@@ -33,10 +33,12 @@ const initialState = {
       },
       lobby:{
         loading: false,
+        messageLog: [],
       }
 };
 
-const socket = io.connect('http://localhost:4001', {reconnection: false});
+const socket = io.connect('http://localhost:4001/', 
+{ reconnection: false});
 
 const middleware = applyMiddleware(thunkMiddleware, logger, socketIO(socket));
 const store = createStore(rootReducer, initialState, middleware);
@@ -47,7 +49,7 @@ export const messageTypes = [
   'USERJOINED',
   'USERDISCONNECT',
   'JOINROOMFAILED',
-  'NEWMESSAGE'
+  'MESSAGERECEIVED'
 ].reduce((accum, msg) => {
   accum[ msg ] = msg
   return accum

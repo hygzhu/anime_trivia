@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import "./lobby.component.css"; // Styles
-import { createLobby, joinLobby, nameChanged, lobbyNameChanged } from "../lobby/lobby.action";
+import { createLobby, joinLobby, nameChanged,
+     lobbyNameChanged ,messageChanged, sendMessage} from "../lobby/lobby.action";
 import { Grid, Row, Col } from "react-bootstrap"
 
 const mapStateToProps = (state) => {
@@ -16,6 +17,8 @@ const mapDispatchToProps = (dispatch) => {
         joinLobby: (name, lobbyname) => dispatch(joinLobby(name, lobbyname)),
         nameChanged: (name) => dispatch(nameChanged(name)),
         lobbyNameChanged: (name) => dispatch(lobbyNameChanged(name)),
+        messageChanged: (message) => dispatch(messageChanged(message)),
+        sendMessage: (message) => dispatch(sendMessage(message)),
     }
 }
 
@@ -26,10 +29,25 @@ const sessionList = (sessions, sessionID) => {
         {session.id == sessionID ? " (You)" : ""}</h3></li>));
 }
 
+const messageList = (messages) => {
+    let messages_list = []
+    let i=0;
+    for (i = i; i < 10 - messages.length; i++){
+        messages_list.push(<li key={i}>&nbsp;</li>);
+    }
+    for(let j=0; j < Math.min(messages.length, 10); j++){
+        messages_list.push(<li style={{textAlign: "left"}} key={i+j}>
+            <h5>{messages[messages.length - Math.min(messages.length, 10) + j]}</h5>
+            </li>);
+    }
+    return (messages_list);
+}
+
 class Lobby extends Component {
 
     render() {
-        const { createLobby, joinLobby, nameChanged, lobbyNameChanged, lobby } = this.props;
+        const { createLobby, joinLobby, nameChanged,
+             lobbyNameChanged, messageChanged, sendMessage, lobby } = this.props;
 
         if (lobby.active) {
             return (
@@ -43,7 +61,12 @@ class Lobby extends Component {
                                 <h2>Current Users:</h2>
                                 <ul>{sessionList(lobby.sessions, lobby.sessionID)}</ul>
                             </Col>
-                            <Col xs={6} md={4}><h1>Chat</h1></Col>
+                            <Col xs={6} md={4}>
+                                <h1>Chat</h1>
+                                <ul>{messageList(lobby.messageLog)}</ul>
+                                <input onChange={(e) => messageChanged(e.target.value)} type="text" maxLength="20"/>
+                                <button onClick={() => sendMessage(lobby.name + ": " + lobby.message)}>Send</button>
+                            </Col>
                             <Col xs={6} md={4}><h1>Other info</h1></Col>
                         </Row>
                     </Grid>
@@ -54,23 +77,15 @@ class Lobby extends Component {
         } else {
             return (
                 <div>
-                    <form>
-                        <label>
-                        <h2>Name: {lobby.name}</h2>
-                            <input onChange={(e) => nameChanged(e.target.value)} type="text" />
-                        </label>
-                    </form>
+                    <h2>Name: {lobby.name}</h2>
+                    <input onChange={(e) => nameChanged(e.target.value)} type="text" />
                     <br />
                     <br />
                     <button onClick={() => createLobby(lobby.name)}>Create Lobby</button>
                     <br />
                     <br />
-                    <form>
-                        <label>
-                        <h2>Lobby Link: {lobby.lobbyname}</h2>
-                            <input onChange={(e) => lobbyNameChanged(e.target.value)} type="text" />
-                        </label>
-                    </form>
+                    <h2>Lobby Link: {lobby.lobbyname}</h2>
+                    <input onChange={(e) => lobbyNameChanged(e.target.value)} type="text" />
                     <br />
                     <br />
                     <button onClick={() => joinLobby(lobby.name, lobby.lobbyname)}>Join a lobby</button>

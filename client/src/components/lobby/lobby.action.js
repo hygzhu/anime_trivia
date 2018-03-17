@@ -25,6 +25,19 @@ export const createLobby = (name) => {
     }
   }
 
+    //action to the server to send a message in the lobby
+    export const sendMessage = (message) => {
+      return {
+        type: "send-message",
+        message: message,
+        meta: {
+          socket: {
+            channel: 'send-message'
+          },
+        },
+      }
+    }
+
   export const nameChanged = (newName) => {
     return {
       type: "NAMECHANGED",
@@ -36,5 +49,12 @@ export const createLobby = (name) => {
     return {
       type: "LOBBYNAMECHANGED",
       name: newName
+    }
+  }
+
+  export const messageChanged = (newMessage) => {
+    return {
+      type: "MESSAGECHANGED",
+      message: newMessage
     }
   }

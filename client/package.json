@@ -7,7 +7,7 @@
     "start": "webpack-dev-server",
     "build": "webpack -p --env.prod",
     "pre:build": "rimraf dist",
-    "deploy": "npm run build && gh-pages -d dist"
+    "deploy": "yarn build && firebase deploy"
   },
   "dependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.26.0",

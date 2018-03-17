@@ -29,6 +29,14 @@ const lobby = function(previousState = {}, action) {
         return { ...previousState,
           lobbyname: action.name,
             };
+      case "MESSAGECHANGED":
+        return { ...previousState,
+          message: action.message,
+          };
+      case "MESSAGERECEIVED":
+        return { ...previousState,
+          messageLog: previousState.messageLog.concat(action.payload.message),
+          };
       case "create-lobby":
         return { ...previousState,
           loading: true,
