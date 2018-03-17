@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import "./menu.component.css"; // Styles
 import { changeMode, changeChoices} from "./menu.action"; 
-import { play } from "../game/game.action"; 
+import { play, multiplayer } from "../game/game.action"; 
 
 const mapStateToProps = (state) => {
     return {
@@ -13,6 +13,7 @@ const mapStateToProps = (state) => {
   const mapDispatchToProps = (dispatch) => {
     return {
         play: () => dispatch(play()),
+        multiplayer: () => dispatch(multiplayer()),
         changeMode: (mode) => dispatch(changeMode(mode)),
         changeChoices: (choices) => dispatch(changeChoices(choices)),
     }
@@ -22,11 +23,15 @@ const mapStateToProps = (state) => {
 class Menu extends Component  {
 
     render() {
-        const { menu, changeMode, changeChoices, play } = this.props
+        const { menu,  changeMode, changeChoices, play ,multiplayer } = this.props
         return (
                 <div>
                     <h1>Anime Song Trivia</h1>
                     <button onClick={play}>Play</button>
+                    <br/>
+                    <br/>
+                    <button onClick={multiplayer}>Multiplayer</button>
+                    <br/>
                     <h2>Points Multiplier: {menu.pointsMultiplier}x</h2>
                     <br />
                     <br />

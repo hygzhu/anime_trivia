@@ -6,6 +6,10 @@ const game = function(previousState = {}, action) {
           lives: 3,
           score: 0
       };
+      case "MULTIPLAYER":
+        return { ...previousState,
+          screen: "lobby"
+      };
       case "SCORE":
         return { ...previousState,
           screen: "score"

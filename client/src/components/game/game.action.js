@@ -4,6 +4,13 @@ export const play = () => {
     }
   }
 
+export const multiplayer = () => {
+  return {
+    type: "MULTIPLAYER",
+  }
+}
+
+
 export const scoreScreen = () => {
   return {
     type: "SCORE",

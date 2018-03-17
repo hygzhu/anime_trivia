@@ -5,7 +5,13 @@
   "repository": "https://github.com/hygzhu/anime_trivia.git",
   "author": "Haoyang <hygzhu@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "client": "cd client && yarn start",
+    "server": "cd server && yarn start",
+    "start": "concurrently --kill-others \"yarn client\" \"yarn server\""
+  },
   "dependencies": {
+    "concurrently": "^3.5.1",
     "express": "^4.16.3",
     "socket.io": "^2.0.4"
   }
