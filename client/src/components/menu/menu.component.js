@@ -27,7 +27,7 @@ class Menu extends Component  {
         return (
                 <div>
                     <h1>Anime Song Trivia</h1>
-                    <button onClick={play}>Play</button>
+                    <button onClick={play}>Singleplayer</button>
                     <br/>
                     <br/>
                     <button onClick={multiplayer}>Multiplayer</button>

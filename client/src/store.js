@@ -32,6 +32,7 @@ const initialState = {
         scoreSubmitted: false,
       },
       lobby:{
+        loading: false,
       }
 };
 
@@ -41,12 +42,17 @@ const middleware = applyMiddleware(thunkMiddleware, logger, socketIO(socket));
 const store = createStore(rootReducer, initialState, middleware);
 
 // makes an object of the form {USERJOINED: 'USERJOINED'}
-const messageTypes = [
+export const messageTypes = [
   'LOADROOM',
+  'USERJOINED',
+  'USERDISCONNECT',
+  'JOINROOMFAILED',
+  'NEWMESSAGE'
 ].reduce((accum, msg) => {
   accum[ msg ] = msg
   return accum
 }, {})
+
 
 //Adds listeners to socket messages so they can be dispatched as actions
 Object.keys(messageTypes).forEach(type => socket.on(type, (payload) => store.dispatch({ type, payload })));
