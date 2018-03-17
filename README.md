@@ -4,9 +4,10 @@ Made with React and Redux
 
 Guess what Anime song and earn points.
 
-Clone and do 
 
+To run the web app front end
 ```
+cd client
 yarn install
 yarn start
 ```
