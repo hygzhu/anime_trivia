@@ -27,22 +27,23 @@ class Menu extends Component  {
         return (
                 <div>
                     <h1>Anime Song Trivia</h1>
-                    <button onClick={play}>Singleplayer</button>
                     <br/>
                     <br/>
-                    <button onClick={multiplayer}>Multiplayer</button>
-                    <br/>
-                    <h2>Points Multiplier: {menu.pointsMultiplier}x</h2>
-                    <br />
-                    <br />
+                    <h3>Single Player</h3>
+                    <button onClick={play}>Play</button>
+                    <h4>Settings</h4>
+                    <h5>Points Multiplier: {menu.pointsMultiplier}x</h5>
                     <div>
-                        <h3>Mode: {menu.mode} ({menu.modeMultiplier}x)</h3>
+                        <h5>Mode: {menu.mode} ({menu.modeMultiplier}x)</h5>
                         <button onClick={() => changeMode("visible")}>Visible</button>
                         <button onClick={() => changeMode("hidden")}>Hidden</button>
-                        <h3>Choices: {menu.choices} ({menu.choicesMultiplier}x)</h3>
+                        <h5>Choices: {menu.choices} ({menu.choicesMultiplier}x)</h5>
                         <button onClick={() => changeChoices(4)}>Few</button>
                         <button onClick={() => changeChoices(8)}>Many</button>
                     </div>
+                    <br/>
+                    <h3>Multiplayer</h3>
+                    <button onClick={multiplayer}>Play</button>
                 </div>
         );
     }

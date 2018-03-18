@@ -34,6 +34,8 @@ const initialState = {
       lobby:{
         loading: false,
         messageLog: [],
+        roomReady: false,
+        ready: false,
       }
 };
 
@@ -44,12 +46,14 @@ const middleware = applyMiddleware(thunkMiddleware, logger, socketIO(socket));
 const store = createStore(rootReducer, initialState, middleware);
 
 // makes an object of the form {USERJOINED: 'USERJOINED'}
+// handlers for server messages
 export const messageTypes = [
   'LOADROOM',
   'USERJOINED',
   'USERDISCONNECT',
   'JOINROOMFAILED',
-  'MESSAGERECEIVED'
+  'MESSAGERECEIVED',
+  'ROOMREADY',
 ].reduce((accum, msg) => {
   accum[ msg ] = msg
   return accum

@@ -14,7 +14,10 @@ app.get('/products/:id', function (req, res, next) {
 })
 
 const server = http.createServer(app)
-const io = socketIO(server)
+
+//workaround to bug https://github.com/socketio/socket.io/issues/3179
+//Needs to define ws engine or events are super slow
+const io = socketIO(server, (http, { wsEngine: 'ws' }))
 
 var sessions = []
 var rooms = []
@@ -49,7 +52,7 @@ io.on('connection', socket => {
     //set the session with that ID to have joined the lobby
     socketByID(socket.id)["lobby"] = lobbyName;
     socketByID(socket.id)["name"] = data.name ;
-
+    socketByID(socket.id)["ready"] = false;
     console.log("CREATED LOBBY: "+  data.name + " ("+ socket.id +') Created Lobby: '+ lobbyName);
 
     //sends room info to newly connected
@@ -85,6 +88,7 @@ socket.on('join-lobby', (data) => {
   //set the session with that ID to have joined the lobby
   socketByID(socket.id)["lobby"] = lobbyName;
   socketByID(socket.id)["name"] = data.name;
+  socketByID(socket.id)["ready"] = false;
   console.log("JOINED LOBBY: "+ data.name + " ("+ socket.id +') Joined Lobby: '+ lobbyName);
 
   //sends room info to newly connected
@@ -92,12 +96,14 @@ socket.on('join-lobby', (data) => {
     "currentSessions": getSessionNames(roomSession(lobbyName)),
     "sessionID": socket.id,
     "lobbyName": lobbyName,
-    "active": true
+    "active": true,
+    "roomReady": false,
   });
 
   //sends update to everyone else in the room
   io.sockets.in(lobbyName).emit('USERJOINED', {
     "currentSessions": getSessionNames(roomSession(lobbyName)),
+    "roomReady": false,
   });
 
   printSessions();
@@ -120,6 +126,27 @@ socket.on('send-message', (data) => {
   console.log("SEND MESSAGE: ("+ socket.id +') Sent message to '+ lobbyName);
 });
 
+//User readies up
+socket.on('player-ready', (data) => {
+  //data has schema
+  /**
+   * type, meta
+   */
+  const lobbyName= socketByID(socket.id)["lobby"];
+  socketByID(socket.id)["ready"] =  !socketByID(socket.id)["ready"];
+
+  //check if everyone in the room is ready
+  let ready = isRoomReady(lobbyName);
+
+  //Notifies everyone else in the room
+  io.sockets.in(lobbyName).emit('ROOMREADY', {
+    "currentSessions": getSessionNames(roomSession(lobbyName)),
+    "roomReady": ready
+  });
+
+  console.log("READYUP: ("+ socket.id +') Changed in lobby: '+ lobbyName);
+});
+
 })
 
 server.listen(port, () => console.log(`Listening on port ${port}`))
@@ -131,6 +158,7 @@ function sessionConnectedDisconnected(socketID, connect){
     console.log('CONNECT: Session '+  socketID +' Connected');
   }else{
     const room = socketByID(socketID)["lobby"];
+
     sessions = sessions.filter(x => x.id !== socketID);
 
     //delete the room if there is nobody in it
@@ -181,6 +209,7 @@ function getSessionNames(session_array){
     formatted.push({
       "id": session_array[i]["id"],
       "name": session_array[i]["name"],
+      "ready": session_array[i]["ready"],
     });
   }
   return formatted;
@@ -194,4 +223,9 @@ function getRandomRoom(n){
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
+}
+
+//checks if all sessions in a room are ready
+function isRoomReady(roomname){
+  return roomSession(roomname).reduce((acc, curr) => acc && curr["ready"], true);
 }

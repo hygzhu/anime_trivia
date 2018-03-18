@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import "./lobby.component.css"; // Styles
 import { createLobby, joinLobby, nameChanged,
-     lobbyNameChanged ,messageChanged, sendMessage} from "../lobby/lobby.action";
+     lobbyNameChanged ,messageChanged, sendMessage,
+     playerReady } from "../lobby/lobby.action";
 import { Grid, Row, Col } from "react-bootstrap"
 
 const mapStateToProps = (state) => {
@@ -19,12 +20,15 @@ const mapDispatchToProps = (dispatch) => {
         lobbyNameChanged: (name) => dispatch(lobbyNameChanged(name)),
         messageChanged: (message) => dispatch(messageChanged(message)),
         sendMessage: (message) => dispatch(sendMessage(message)),
+        playerReady: () => dispatch(playerReady()),
     }
 }
 
 const sessionList = (sessions, sessionID) => {
     return (sessions.map((session) => 
-    <li key={session.id}><h3>{session.name}
+    <li key={session.id}><h3>
+        {session.ready ? "READY: " : ""}
+        {session.name}
         {session.name == undefined ? "No Name" : ""}
         {session.id == sessionID ? " (You)" : ""}</h3></li>));
 }
@@ -47,7 +51,7 @@ class Lobby extends Component {
 
     render() {
         const { createLobby, joinLobby, nameChanged,
-             lobbyNameChanged, messageChanged, sendMessage, lobby } = this.props;
+             lobbyNameChanged, messageChanged, sendMessage, playerReady, lobby } = this.props;
 
         if (lobby.active) {
             return (
@@ -67,7 +71,19 @@ class Lobby extends Component {
                                 <input onChange={(e) => messageChanged(e.target.value)} type="text" maxLength="20"/>
                                 <button onClick={() => sendMessage(lobby.name + ": " + lobby.message)}>Send</button>
                             </Col>
-                            <Col xs={6} md={4}><h1>Other info</h1></Col>
+                            <Col xs={6} md={4}>
+                                <h1>Settings</h1>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                        </Row>
+                        <Row>
+                            <button onClick={() => playerReady()}>{lobby.ready ? "Unready" : "Ready"}</button>
+                            <h2>{lobby.roomReady ? "Room is ready" : "Room is not ready"}</h2>
                         </Row>
                     </Grid>
                 </div>);
@@ -78,14 +94,14 @@ class Lobby extends Component {
             return (
                 <div>
                     <h2>Name: {lobby.name}</h2>
-                    <input onChange={(e) => nameChanged(e.target.value)} type="text" />
+                    <input onChange={(e) => nameChanged(e.target.value)} type="text" maxLength="20" />
                     <br />
                     <br />
                     <button onClick={() => createLobby(lobby.name)}>Create Lobby</button>
                     <br />
                     <br />
                     <h2>Lobby Link: {lobby.lobbyname}</h2>
-                    <input onChange={(e) => lobbyNameChanged(e.target.value)} type="text" />
+                    <input onChange={(e) => lobbyNameChanged(e.target.value)} type="text" maxLength="20" />
                     <br />
                     <br />
                     <button onClick={() => joinLobby(lobby.name, lobby.lobbyname)}>Join a lobby</button>

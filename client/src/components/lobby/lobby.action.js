@@ -38,6 +38,18 @@ export const createLobby = (name) => {
       }
     }
 
+    //action to the server that the player is ready
+    export const playerReady = () => {
+      return {
+        type: "player-ready",
+        meta: {
+          socket: {
+            channel: 'player-ready'
+          },
+        },
+      }
+    }
+
   export const nameChanged = (newName) => {
     return {
       type: "NAMECHANGED",

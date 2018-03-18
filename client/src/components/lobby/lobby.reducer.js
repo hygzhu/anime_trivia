@@ -7,10 +7,12 @@ const lobby = function(previousState = {}, action) {
           active: action.payload.active,
           loading: false,
           sessionID: action.payload.sessionID,
+          roomReady: action.payload.roomReady,
             };
       case "USERJOINED":
         return { ...previousState,
           sessions: action.payload.currentSessions,
+          roomReady: action.payload.roomReady,
             };
       case "USERDISCONNECT":
         return { ...previousState,
@@ -36,6 +38,13 @@ const lobby = function(previousState = {}, action) {
       case "MESSAGERECEIVED":
         return { ...previousState,
           messageLog: previousState.messageLog.concat(action.payload.message),
+          };
+      case "ROOMREADY":
+        return { ...previousState,
+          ready: action.payload.currentSessions.find(
+            x => x.id == previousState.sessionID).ready,
+          sessions: action.payload.currentSessions,
+          roomReady: action.payload.roomReady,
           };
       case "create-lobby":
         return { ...previousState,
