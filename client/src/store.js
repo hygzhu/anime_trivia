@@ -56,6 +56,7 @@ export const messageTypes = [
   'MESSAGERECEIVED',
   'ROOMREADY',
   'ROUNDSTART',
+  'UPDATEGAMESTATE',
 ].reduce((accum, msg) => {
   accum[ msg ] = msg
   return accum

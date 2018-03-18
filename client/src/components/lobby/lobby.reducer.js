@@ -53,6 +53,12 @@ const lobby = function(previousState = {}, action) {
           roomReady: action.payload.roomReady,
           gameActive: action.payload.gameActive,
           ready: action.payload.ready,
+          game: action.payload.game,
+          };
+      case "UPDATEGAMESTATE":
+        return { ...previousState,
+          sessions: action.payload.currentSessions,
+          game: action.payload.game,
           };
       case "create-lobby":
         return { ...previousState,
@@ -61,6 +67,10 @@ const lobby = function(previousState = {}, action) {
       case "join-lobby":
         return { ...previousState,
           loading: true,
+            };
+      case "submit-answer":
+        return { ...previousState,
+          ready: false,
             };
       default:
         return previousState;

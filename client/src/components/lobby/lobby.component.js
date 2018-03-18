@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import "./lobby.component.css"; // Styles
 import { createLobby, joinLobby, nameChanged,
      lobbyNameChanged ,messageChanged, sendMessage,
-     playerReady } from "../lobby/lobby.action";
+     playerReady, submitAnswer } from "../lobby/lobby.action";
 import { Grid, Row, Col } from "react-bootstrap"
 import VideoPlayer from "./lobby-video-player"
 
@@ -22,6 +22,7 @@ const mapDispatchToProps = (dispatch) => {
         messageChanged: (message) => dispatch(messageChanged(message)),
         sendMessage: (message) => dispatch(sendMessage(message)),
         playerReady: () => dispatch(playerReady()),
+        submitAnswer: (answer) => dispatch(submitAnswer(answer)),
     }
 }
 
@@ -31,7 +32,8 @@ const sessionList = (sessions, sessionID, isGame) => {
         {session.ready && !isGame ? "READY: " : ""}
         {session.name}
         {session.name == undefined ? "No Name" : ""}
-        {session.id == sessionID ? " (You)" : ""}</h3></li>));
+        {session.id == sessionID ? " (You)" : ""}
+        {isGame ? " Score: " + session.score: ""}</h3></li>));
 }
 
 const messageList = (messages) => {
@@ -48,12 +50,12 @@ const messageList = (messages) => {
     return (messages_list);
 }
 
-const optionButtons = (options) => {
+const optionButtons = (options, onlick_event) => {
     let randomButtons = [];
     for (let j =0; j<options.length; j++){
         let answer = options[j]; //This needs to initialized or submitAnswer sends undefined
         randomButtons.push(
-            <button key={j} >{options[j]}</button>
+            <button key={j} onClick={() =>onlick_event(answer)}>{options[j]}</button>
         );
     }
     return randomButtons;
@@ -63,7 +65,8 @@ class Lobby extends Component {
 
     render() {
         const { createLobby, joinLobby, nameChanged,
-             lobbyNameChanged, messageChanged, sendMessage, playerReady, lobby } = this.props;
+             lobbyNameChanged, messageChanged, 
+             sendMessage, playerReady, submitAnswer, lobby } = this.props;
 
         if (lobby.active && !lobby.gameActive) {
             //lobby menu
@@ -121,7 +124,7 @@ class Lobby extends Component {
                     <Row>
                         <Col xs={6} md={4} style={{"background": "rgba(90, 90, 90, .5)"}}>
                         <h2>Current Users:</h2>
-                        <ul>{sessionList(lobby.sessions, lobby.sessionID, true)}</ul>
+                        <ul>{sessionList(lobby.game, lobby.sessionID, true)}</ul>
                         </Col>
                         <Col xs={6} md={4}>
                         </Col>
@@ -135,7 +138,7 @@ class Lobby extends Component {
                     </Grid>
                     </div>
                     <div style={{ display: "flex", width: "100%", bottom:"0%", alignItems:"center", justifyContent:"center", position:"fixed","zIndex": 100}}>
-                     {optionButtons(lobby.trivia.options)}
+                     {lobby.ready ? optionButtons(lobby.trivia.options, submitAnswer) : ""}
                     </div>
                 </div>
             );

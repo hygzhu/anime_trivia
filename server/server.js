@@ -152,16 +152,35 @@ io.on('connection', socket => {
       //change ready status of everyone in the room the false (to allow answering question)
       setSessionAttribute(lobbyName, "ready", false);
 
+      let trivia_data = getTrivia(4);
+
+      //add game session data
+      let game_session_data = []
+      let sessions_in_room = roomSession(lobbyName);
+      for (let i = 0; i < sessions_in_room.length; i++) {
+        let data = {
+          "id": sessions_in_room[i]["id"],
+          "name": sessions_in_room[i]["name"],
+          "score": 0,
+        };
+        game_session_data.push(data);
+      }
+      games.push({ room: lobbyName, trivia: trivia_data, sessions: game_session_data});
+
       //sends info for new round
-      io.sockets.in(lobbyName).emit('ROUNDSTART', {
+      let game_data= {
         "currentSessions": getSessionNames(roomSession(lobbyName)),
         "roomReady": ready,
-        "trivia": getTrivia(4),
+        "trivia": trivia_data,
         "gameActive": true,
-        "ready": false,
-      });
+        "ready": true,
+        "game": game_session_data,
+      };
+      io.sockets.in(lobbyName).emit('ROUNDSTART', game_data);
+      
+      printGames();
 
-      //Goes to next round in 10 seconds
+      //Goes to next round in 30 seconds
       let roundLoop = setInterval(
         function () {
           if (roomSession(lobbyName).length == 0) {
@@ -169,16 +188,52 @@ io.on('connection', socket => {
             clearInterval(roundLoop);
           }else{
             console.log("ROUND LOOP")
-            io.sockets.in(lobbyName).emit('ROUNDSTART', {
+            trivia_data = getTrivia(4);
+            game_data = {
               "currentSessions": getSessionNames(roomSession(lobbyName)),
               "roomReady": ready,
-              "trivia": getTrivia(4),
+              "trivia": trivia_data,
               "gameActive": true,
-              "ready": false,
-            })
+              "ready": true,
+              "game": games.find(x=> x.room == lobbyName)["sessions"]
+            };
+            //update games
+            games = games.map(x => x.room == lobbyName ? {...x, trivia: trivia_data} : x)
+            printGames();
+            io.sockets.in(lobbyName).emit('ROUNDSTART', game_data)
           }
-        }, 10000);
+        }, 15000);
     }
+  });
+
+  //User submits an answer to a game
+  socket.on('submit-answer', (data) => {
+    //data has schema
+    /**
+     * type, answer, meta
+     */
+    const lobbyName = socketByID(socket.id)["lobby"];
+    const current_game = games.find(x => x.room == lobbyName);
+    let updated_game = current_game;
+    //checks if answer is correct and update the score of that session in the score
+    console.log(data["answer"] + " : " + current_game["trivia"]["animeName"] )
+    if(data["answer"] == current_game["trivia"]["animeName"]){
+      updated_game = {
+        ...current_game,
+        sessions: current_game["sessions"].map(
+          x => x.id == socket.id ?  {...x, score: x.score + 10} : x)
+      }
+      games = games.map(x => x.room == lobbyName ? updated_game : x)
+    }
+    //update session readyness
+    sessions = sessions.map(x => x["id"] == socket.id ? { ...x, ready: false} : x);
+
+    //lets all the session in that room what the game state is
+    io.sockets.in(lobbyName).emit('UPDATEGAMESTATE', {
+      "currentSessions": getSessionNames(roomSession(lobbyName)),
+      "game": updated_game["sessions"],
+    });
+    console.log("SUBMITANSWER: (" + socket.id + ') Sent answer to ' + lobbyName);
   });
 
 })
@@ -193,16 +248,28 @@ function sessionConnectedDisconnected(socketID, connect) {
   } else {
     const room = socketByID(socketID)["lobby"];
 
+    //remove from sessions
     sessions = sessions.filter(x => x.id !== socketID);
+    //removes from games
+    const current_game = games.find(x => x.room == room);
+    let updated_game = current_game;
+    updated_game = {
+      ...current_game,
+      sessions: current_game["sessions"].filter(x => x.id == socketID),
+    }
+    games = games.map(x => x.room == room ? updated_game : x)
 
     //delete the room if there is nobody in it
     if (roomSession(room).length == 0) {
       rooms = rooms.filter(x => x !== room)
+      //delete games with that room
+      games = games.filter(x => x.room !== room)
     }
     console.log('DISCONNECT: Session ' + socketID + ' Disconnected');
   }
   printSessions();
   printRooms();
+  printGames();
 }
 
 function printSessions() {
@@ -224,6 +291,16 @@ function printRooms() {
   }
   rooms_in_string += ']';
   console.log('PRINT: Current Rooms:' + rooms_in_string);
+}
+
+function printGames() {
+  //print all current games
+  games_in_string = '['
+  for (let i = 0; i < games.length; i++) {
+    games_in_string += JSON.stringify(games[i]) + ', ';
+  }
+  games_in_string += ']';
+  console.log('PRINT: Current Games:' + games_in_string);
 }
 
 //returns the session by socket id
