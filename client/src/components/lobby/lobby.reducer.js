@@ -46,6 +46,14 @@ const lobby = function(previousState = {}, action) {
           sessions: action.payload.currentSessions,
           roomReady: action.payload.roomReady,
           };
+      case "ROUNDSTART":
+        return { ...previousState,
+          trivia: action.payload.trivia,
+          sessions: action.payload.currentSessions,
+          roomReady: action.payload.roomReady,
+          gameActive: action.payload.gameActive,
+          ready: action.payload.ready,
+          };
       case "create-lobby":
         return { ...previousState,
           loading: true,

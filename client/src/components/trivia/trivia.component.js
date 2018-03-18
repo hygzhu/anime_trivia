@@ -77,7 +77,8 @@ class Trivia extends Component {
   render() {
     return (
       <div>
-        <VideoPlayer style={{position:"relative", display: "flex", width: "100vw", height: "100vh", "zIndex": -1}}/>
+        <div style={{position:"fixed", display: "flex", width: "100vw", height: "100vh", "zIndex": 50, "backgroundColor":"transparent"}}></div>
+        <VideoPlayer style={{position:"absolute", display: "flex", width: "100vw", height: "100vh", "zIndex": -1}}/>
         <div style={{ display: "flex", top:"0%", left:"50%", transform: "translate(-50%, 0%)",  position:"fixed","zIndex": 100}}>
         <Grid >
           <Row>

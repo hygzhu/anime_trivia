@@ -5,6 +5,7 @@ import { createLobby, joinLobby, nameChanged,
      lobbyNameChanged ,messageChanged, sendMessage,
      playerReady } from "../lobby/lobby.action";
 import { Grid, Row, Col } from "react-bootstrap"
+import VideoPlayer from "./lobby-video-player"
 
 const mapStateToProps = (state) => {
     return {
@@ -24,10 +25,10 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-const sessionList = (sessions, sessionID) => {
+const sessionList = (sessions, sessionID, isGame) => {
     return (sessions.map((session) => 
     <li key={session.id}><h3>
-        {session.ready ? "READY: " : ""}
+        {session.ready && !isGame ? "READY: " : ""}
         {session.name}
         {session.name == undefined ? "No Name" : ""}
         {session.id == sessionID ? " (You)" : ""}</h3></li>));
@@ -47,13 +48,25 @@ const messageList = (messages) => {
     return (messages_list);
 }
 
+const optionButtons = (options) => {
+    let randomButtons = [];
+    for (let j =0; j<options.length; j++){
+        let answer = options[j]; //This needs to initialized or submitAnswer sends undefined
+        randomButtons.push(
+            <button key={j} >{options[j]}</button>
+        );
+    }
+    return randomButtons;
+}
+
 class Lobby extends Component {
 
     render() {
         const { createLobby, joinLobby, nameChanged,
              lobbyNameChanged, messageChanged, sendMessage, playerReady, lobby } = this.props;
 
-        if (lobby.active) {
+        if (lobby.active && !lobby.gameActive) {
+            //lobby menu
             return (
                 <div>
                     <Grid>
@@ -63,7 +76,7 @@ class Lobby extends Component {
                         <Row>
                             <Col xs={6} md={4}>
                                 <h2>Current Users:</h2>
-                                <ul>{sessionList(lobby.sessions, lobby.sessionID)}</ul>
+                                <ul>{sessionList(lobby.sessions, lobby.sessionID, false)}</ul>
                             </Col>
                             <Col xs={6} md={4}>
                                 <h1>Chat</h1>
@@ -88,9 +101,46 @@ class Lobby extends Component {
                     </Grid>
                 </div>);
         } else if(lobby.loading){
-           return( <h1>Lobby Loading</h1>
-        );
-        } else {
+            //loading menu
+           return( <h1>Lobby Loading</h1>);
+        } else if(lobby.gameActive){
+            //load trivia
+            return(
+                <div>
+                <div style={{position:"fixed", display: "flex", width: "100vw", height: "100vh", "zIndex": 50, "backgroundColor":"transparent"}}></div>
+                    <VideoPlayer style={{position:"relative", display: "flex", width: "100vw", height: "100vh", "zIndex": -1}}/>
+                    <div style={{ display: "flex", "width": "100vw", top:"0%", left:"50%", transform: "translate(-50%, 0%)",  position:"fixed","zIndex": 100}}>
+                    <Grid style={{"width": "100vw"}}>
+                    <Row>
+                        <Col xs={6} md={4}></Col>
+                        <Col xs={6} md={4}>
+                            <h1>Lobby Name: {lobby.lobbyname}</h1>
+                        </Col>
+                        <Col xs={6} md={4}></Col>
+                    </Row>
+                    <Row>
+                        <Col xs={6} md={4} style={{"background": "rgba(90, 90, 90, .5)"}}>
+                        <h2>Current Users:</h2>
+                        <ul>{sessionList(lobby.sessions, lobby.sessionID, true)}</ul>
+                        </Col>
+                        <Col xs={6} md={4}>
+                        </Col>
+                        <Col xs={6} md={4} style={{"background": "rgba(90, 90, 90, .5)"}}>
+                        <h1>Chat</h1>
+                            <ul>{messageList(lobby.messageLog)}</ul>
+                            <input onChange={(e) => messageChanged(e.target.value)} type="text" maxLength="20"/>
+                            <button onClick={() => sendMessage(lobby.name + ": " + lobby.message)}>Send</button>
+                        </Col>
+                    </Row>
+                    </Grid>
+                    </div>
+                    <div style={{ display: "flex", width: "100%", bottom:"0%", alignItems:"center", justifyContent:"center", position:"fixed","zIndex": 100}}>
+                     {optionButtons(lobby.trivia.options)}
+                    </div>
+                </div>
+            );
+        }else{
+            //join/create lobby menu
             return (
                 <div>
                     <h2>Name: {lobby.name}</h2>

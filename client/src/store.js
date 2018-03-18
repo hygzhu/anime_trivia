@@ -36,6 +36,7 @@ const initialState = {
         messageLog: [],
         roomReady: false,
         ready: false,
+        gameActive: false,
       }
 };
 
@@ -54,6 +55,7 @@ export const messageTypes = [
   'JOINROOMFAILED',
   'MESSAGERECEIVED',
   'ROOMREADY',
+  'ROUNDSTART',
 ].reduce((accum, msg) => {
   accum[ msg ] = msg
   return accum

@@ -3,6 +3,8 @@ const http = require('http')
 var cors = require('cors')
 const socketIO = require('socket.io')
 
+const animelist = require('./animelist.json')
+
 // our localhost port
 const port = 4001
 
@@ -10,7 +12,7 @@ const app = express()
 //enables all cors requests
 app.use(cors())
 app.get('/products/:id', function (req, res, next) {
-  res.json({msg: 'This is CORS-enabled for all origins!'})
+  res.json({ msg: 'This is CORS-enabled for all origins!' })
 })
 
 const server = http.createServer(app)
@@ -21,8 +23,7 @@ const io = socketIO(server, (http, { wsEngine: 'ws' }))
 
 var sessions = []
 var rooms = []
-
-
+var games = []
 
 io.on('connection', socket => {
 
@@ -45,15 +46,15 @@ io.on('connection', socket => {
     /**
      * type, newUser, payload (message), meta
      */
-    const lobbyName= getRandomRoom(5);
+    const lobbyName = getRandomRoom(5);
     rooms.push(lobbyName);
     socket.join(lobbyName);
 
     //set the session with that ID to have joined the lobby
     socketByID(socket.id)["lobby"] = lobbyName;
-    socketByID(socket.id)["name"] = data.name ;
+    socketByID(socket.id)["name"] = data.name;
     socketByID(socket.id)["ready"] = false;
-    console.log("CREATED LOBBY: "+  data.name + " ("+ socket.id +') Created Lobby: '+ lobbyName);
+    console.log("CREATED LOBBY: " + data.name + " (" + socket.id + ') Created Lobby: ' + lobbyName);
 
     //sends room info to newly connected
     io.to(socket.id).emit('LOADROOM', {
@@ -67,145 +68,178 @@ io.on('connection', socket => {
     printRooms();
   });
 
-//Join a game lobby
-socket.on('join-lobby', (data) => {
-  //data has schema
-  /**
-   * type, name, lobbyname, meta
-   */
-  const lobbyName= data.lobbyname; 
+  //Join a game lobby
+  socket.on('join-lobby', (data) => {
+    //data has schema
+    /**
+     * type, name, lobbyname, meta
+     */
+    const lobbyName = data.lobbyname;
 
-  //if lobby does not exist, return a different message
-  if(!rooms.includes(lobbyName)){
-    io.to(socket.id).emit('JOINROOMFAILED', {
-      "message": "Room does not exist"
+    //if lobby does not exist, return a different message
+    if (!rooms.includes(lobbyName)) {
+      io.to(socket.id).emit('JOINROOMFAILED', {
+        "message": "Room does not exist"
+      });
+      console.log("JOIN FAILED: " + data.name + " (" + socket.id + ') Could not join ' + lobbyName);
+      return;
+    }
+    socket.join(lobbyName);
+
+    //set the session with that ID to have joined the lobby
+    socketByID(socket.id)["lobby"] = lobbyName;
+    socketByID(socket.id)["name"] = data.name;
+    socketByID(socket.id)["ready"] = false;
+    console.log("JOINED LOBBY: " + data.name + " (" + socket.id + ') Joined Lobby: ' + lobbyName);
+
+    //sends room info to newly connected
+    io.to(socket.id).emit('LOADROOM', {
+      "currentSessions": getSessionNames(roomSession(lobbyName)),
+      "sessionID": socket.id,
+      "lobbyName": lobbyName,
+      "active": true,
+      "roomReady": false,
     });
-    console.log("JOIN FAILED: "+ data.name + " ("+ socket.id +') Could not join '+ lobbyName);
-    return;
-  }
-  socket.join(lobbyName);
 
-  //set the session with that ID to have joined the lobby
-  socketByID(socket.id)["lobby"] = lobbyName;
-  socketByID(socket.id)["name"] = data.name;
-  socketByID(socket.id)["ready"] = false;
-  console.log("JOINED LOBBY: "+ data.name + " ("+ socket.id +') Joined Lobby: '+ lobbyName);
+    //sends update to everyone else in the room
+    io.sockets.in(lobbyName).emit('USERJOINED', {
+      "currentSessions": getSessionNames(roomSession(lobbyName)),
+      "roomReady": false,
+    });
 
-  //sends room info to newly connected
-  io.to(socket.id).emit('LOADROOM', {
-    "currentSessions": getSessionNames(roomSession(lobbyName)),
-    "sessionID": socket.id,
-    "lobbyName": lobbyName,
-    "active": true,
-    "roomReady": false,
+    printSessions();
+    printRooms();
   });
 
-  //sends update to everyone else in the room
-  io.sockets.in(lobbyName).emit('USERJOINED', {
-    "currentSessions": getSessionNames(roomSession(lobbyName)),
-    "roomReady": false,
+  //User sends a message to game lobby
+  socket.on('send-message', (data) => {
+    //data has schema
+    /**
+     * type, message, meta
+     */
+    const lobbyName = socketByID(socket.id)["lobby"];
+
+    //sends message to everyone else in the room
+    io.sockets.in(lobbyName).emit('MESSAGERECEIVED', {
+      "message": data["message"],
+    });
+
+    console.log("SEND MESSAGE: (" + socket.id + ') Sent message to ' + lobbyName);
   });
 
-  printSessions();
-  printRooms();
-});
+  //User readies up
+  socket.on('player-ready', (data) => {
+    //data has schema
+    /**
+     * type, meta
+     */
+    const lobbyName = socketByID(socket.id)["lobby"];
+    socketByID(socket.id)["ready"] = !socketByID(socket.id)["ready"];
 
-//User sends a message to game lobby
-socket.on('send-message', (data) => {
-  //data has schema
-  /**
-   * type, message, meta
-   */
-  const lobbyName= socketByID(socket.id)["lobby"]; 
+    //check if everyone in the room is ready
+    let ready = isRoomReady(lobbyName);
 
-  //sends message to everyone else in the room
-  io.sockets.in(lobbyName).emit('MESSAGERECEIVED', {
-    "message": data["message"],
+    //Notifies everyone else in the room
+    io.sockets.in(lobbyName).emit('ROOMREADY', {
+      "currentSessions": getSessionNames(roomSession(lobbyName)),
+      "roomReady": ready
+    });
+    console.log("READYUP: (" + socket.id + ') Changed in lobby: ' + lobbyName);
+
+    //if room is ready we want to emit a message with game info to start the game
+    if (ready) {
+
+      //change ready status of everyone in the room the false (to allow answering question)
+      setSessionAttribute(lobbyName, "ready", false);
+
+      //sends info for new round
+      io.sockets.in(lobbyName).emit('ROUNDSTART', {
+        "currentSessions": getSessionNames(roomSession(lobbyName)),
+        "roomReady": ready,
+        "trivia": getTrivia(4),
+        "gameActive": true,
+        "ready": false,
+      });
+
+      //Goes to next round in 10 seconds
+      let roundLoop = setInterval(
+        function () {
+          if (roomSession(lobbyName).length == 0) {
+            console.log("ROUND LOOP ENDED")
+            clearInterval(roundLoop);
+          }else{
+            console.log("ROUND LOOP")
+            io.sockets.in(lobbyName).emit('ROUNDSTART', {
+              "currentSessions": getSessionNames(roomSession(lobbyName)),
+              "roomReady": ready,
+              "trivia": getTrivia(4),
+              "gameActive": true,
+              "ready": false,
+            })
+          }
+        }, 10000);
+    }
   });
-
-  console.log("SEND MESSAGE: ("+ socket.id +') Sent message to '+ lobbyName);
-});
-
-//User readies up
-socket.on('player-ready', (data) => {
-  //data has schema
-  /**
-   * type, meta
-   */
-  const lobbyName= socketByID(socket.id)["lobby"];
-  socketByID(socket.id)["ready"] =  !socketByID(socket.id)["ready"];
-
-  //check if everyone in the room is ready
-  let ready = isRoomReady(lobbyName);
-
-  //Notifies everyone else in the room
-  io.sockets.in(lobbyName).emit('ROOMREADY', {
-    "currentSessions": getSessionNames(roomSession(lobbyName)),
-    "roomReady": ready
-  });
-
-  console.log("READYUP: ("+ socket.id +') Changed in lobby: '+ lobbyName);
-});
 
 })
 
 server.listen(port, () => console.log(`Listening on port ${port}`))
 
-function sessionConnectedDisconnected(socketID, connect){
+function sessionConnectedDisconnected(socketID, connect) {
   //handles new connections and disconnects
-  if(connect){
-    sessions.push({id: socketID});
-    console.log('CONNECT: Session '+  socketID +' Connected');
-  }else{
+  if (connect) {
+    sessions.push({ id: socketID });
+    console.log('CONNECT: Session ' + socketID + ' Connected');
+  } else {
     const room = socketByID(socketID)["lobby"];
 
     sessions = sessions.filter(x => x.id !== socketID);
 
     //delete the room if there is nobody in it
-    if(roomSession(room).length == 0){
+    if (roomSession(room).length == 0) {
       rooms = rooms.filter(x => x !== room)
     }
-    console.log('DISCONNECT: Session '+  socketID +' Disconnected');
+    console.log('DISCONNECT: Session ' + socketID + ' Disconnected');
   }
   printSessions();
   printRooms();
 }
 
-function printSessions(){
-    //print all current sessions
-    sessions_in_string = '['
-    for(let i = 0; i < sessions.length; i++){
-      sessions_in_string +=  JSON.stringify(sessions[i]) + ', ';
-    }
-    sessions_in_string += ']';
-    console.log('PRINT: Current sessions:' + sessions_in_string);
+function printSessions() {
+  //print all current sessions
+  sessions_in_string = '['
+  for (let i = 0; i < sessions.length; i++) {
+    sessions_in_string += JSON.stringify(sessions[i]) + ', ';
+  }
+  sessions_in_string += ']';
+  console.log('PRINT: Current sessions:' + sessions_in_string);
 }
 
 
-function printRooms(){
+function printRooms() {
   //print all current Rooms
   rooms_in_string = '['
-  for(let i = 0; i < rooms.length; i++){
-    rooms_in_string +=  rooms[i] + ', ';
+  for (let i = 0; i < rooms.length; i++) {
+    rooms_in_string += rooms[i] + ', ';
   }
   rooms_in_string += ']';
   console.log('PRINT: Current Rooms:' + rooms_in_string);
 }
 
 //returns the session by socket id
-function socketByID(id){
+function socketByID(id) {
   return sessions.find(x => x.id === id);
 }
 
 //returns all the sessions in a room
-function roomSession(roomName){
+function roomSession(roomName) {
   return sessions.filter(x => x.lobby === roomName);
 }
 
 //formats sessions in a list of objects
-function getSessionNames(session_array){
+function getSessionNames(session_array) {
   formatted = [];
-  for(let i = 0; i < session_array.length; i++){
+  for (let i = 0; i < session_array.length; i++) {
     formatted.push({
       "id": session_array[i]["id"],
       "name": session_array[i]["name"],
@@ -215,17 +249,56 @@ function getSessionNames(session_array){
   return formatted;
 }
 
-//generat random room name of length n
-function getRandomRoom(n){
-  let text ="";
+//generate random room name of length n
+function getRandomRoom(n) {
+  let text = "";
   let possibble = possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (let i = 0; i < n; i++){
+  for (let i = 0; i < n; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
 }
 
 //checks if all sessions in a room are ready
-function isRoomReady(roomname){
+function isRoomReady(roomname) {
   return roomSession(roomname).reduce((acc, curr) => acc && curr["ready"], true);
+}
+
+//Modifies the attribute to a value of all session in a room
+function setSessionAttribute(room, attribute, attribute_value) {
+  sessions = sessions.map(x => x["lobby"] == room ? { ...x, [attribute]: attribute_value } : x);
+}
+
+//gets a new trivia round
+function getTrivia(optionsCount) {
+  //gets new anime
+  const total = animelist.length;
+  const randAnime = Math.floor((Math.random() * total) + 1);
+  const newAnime = animelist[randAnime];
+  const newAnimeName = newAnime["source"];
+
+  //gets random options
+  let randomOptions = [];
+  for (let i = 0; i < optionsCount; i++) {
+    let index = Math.floor((Math.random() * total) + 1);
+    let animeName = animelist[index]["source"];
+    //prevents duplicates
+    while (newAnimeName == animeName || randomOptions.includes(animeName)) {
+      index = Math.floor((Math.random() * total) + 1);
+      animeName = animelist[index]["source"];
+    }
+    randomOptions.push(animeName);
+  }
+  randomOptions[Math.floor((Math.random() * optionsCount))] = newAnimeName;
+
+  data = {
+    "animeName": newAnime["source"],
+    "title": newAnime["title"],
+    "songName": newAnime["song"] ? newAnime["song"]["title"] : null,
+    "songArtist": newAnime["song"] ? newAnime["song"]["artist"] : null,
+    "filename": "http://openings.moe/video/" + animelist[randAnime]["file"],
+    "options": randomOptions,
+  };
+
+  return data;
 }
