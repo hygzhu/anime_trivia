@@ -26,7 +26,7 @@ class Menu extends Component  {
         const { menu,  changeMode, changeChoices, play ,multiplayer } = this.props
         return (
                 <div>
-                    <h1>Anime Song Trivia</h1>
+                    <h1 style={{margin: 0}}>Anime Song Trivia</h1>
                     <br/>
                     <br/>
                     <h3>Single Player</h3>

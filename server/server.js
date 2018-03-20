@@ -6,7 +6,7 @@ const socketIO = require('socket.io')
 const animelist = require('./animelist.json')
 
 // our localhost port
-const port = 4001
+const port = 4001;
 
 const app = express()
 //enables all cors requests
@@ -252,12 +252,14 @@ function sessionConnectedDisconnected(socketID, connect) {
     sessions = sessions.filter(x => x.id !== socketID);
     //removes from games
     const current_game = games.find(x => x.room == room);
-    let updated_game = current_game;
-    updated_game = {
-      ...current_game,
-      sessions: current_game["sessions"].filter(x => x.id == socketID),
+    if(current_game != undefined){
+      let updated_game = current_game;
+      updated_game = {
+        ...current_game,
+        sessions: current_game["sessions"].filter(x => x.id == socketID),
+      }
+      games = games.map(x => x.room == room ? updated_game : x)
     }
-    games = games.map(x => x.room == room ? updated_game : x)
 
     //delete the room if there is nobody in it
     if (roomSession(room).length == 0) {
