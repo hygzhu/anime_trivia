@@ -40,7 +40,8 @@ const initialState = {
       }
 };
 
-const socket = io.connect('http://localhost:4001/', 
+//CHANGE THIS TO 'http://localhost:4001/' when testing locally
+const socket = io.connect('https://mysterious-crag-80714.herokuapp.com/', 
 { reconnection: false});
 
 const middleware = applyMiddleware(thunkMiddleware, logger, socketIO(socket));

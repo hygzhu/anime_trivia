@@ -55,7 +55,7 @@ class Trivia extends Component {
       newAnime["title"],
       newAnime["song"] ? newAnime["song"]["title"] : null,
       newAnime["song"] ? newAnime["song"]["artist"] : null,
-      "http://openings.moe/video/" + AnimeList[randAnime]["file"]);
+      "https://openings.moe/video/" + AnimeList[randAnime]["file"] + ".webm");
   }
 
   componentWillMount() {
