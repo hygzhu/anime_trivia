@@ -4,6 +4,7 @@ import "./game.component.css"; // Styles
 import Menu from "../menu/menu.component.js"
 import Trivia from "../trivia/trivia.component.js"
 import Score from "../score/score.component.js"
+import Settings from "../menu/settings.component.js"
 import Lobby from "../lobby/lobby.component.js"
 
 const mapStateToProps = (state) => {
@@ -24,6 +25,8 @@ class Game extends Component  {
               return (<Score />);
             case "lobby":
               return (<Lobby />);
+            case "settings":
+              return (<Settings />);
             default:
               return (<Menu />);
           }

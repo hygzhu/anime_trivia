@@ -10,6 +10,13 @@ export const multiplayer = () => {
   }
 }
 
+export const settings = () => {
+  return {
+    type: "SETTINGS",
+  }
+}
+
+
 
 export const scoreScreen = () => {
   return {

@@ -18,6 +18,10 @@ const game = function(previousState = {}, action) {
         return { ...previousState,
           screen: "menu"
       };
+      case "SETTINGS":
+        return { ...previousState,
+          screen: "settings"
+      };
       case "SUBMITANSWER":
         return { ...previousState,
           score: previousState.score + action.score,
